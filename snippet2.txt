@@ -1,0 +1,222 @@
+  <section className="cve-column cve-column-build">
+          <div className="cve-build-tag">Pending Build</div>
+          <header className="cve-build-header">
+            <div className="cve-build-version-block">
+              <PackageIcon />
+              <div>
+                <div className="cve-build-version">{PENDING_BUILD.version}</div>
+                <div className="cve-build-target">
+                  <ClockIcon />
+                  <span>
+                    Target {PENDING_BUILD.target_date}
+                    <span className="cve-build-days">
+                      · {daysToShip > 0 ? `${daysToShip} days` : "due"}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button className="btn" disabled={allocated.length === 0}>
+              Lock build
+            </button>
+          </header>
+
+          <div className="cve-build-notes">{PENDING_BUILD.notes}</div>
+
+          <div className="cve-build-summary">
+            <div className="cve-build-summary-label">
+              <span>{allocated.length} CVE{allocated.length === 1 ? "" : "s"} allocated</span>
+              {allocated.length > 0 && (
+                <span className="cve-build-summary-breakdown">
+                  {(["critical", "high", "medium", "low"] as Severity[])
+                    .filter((s) => allocatedCounts[s] > 0)
+                    .map((s) => (
+                      <span key={s} className={`sev-dot sev-${s}`}>
+                        <span className="sev-dot-mark" />
+                        {allocatedCounts[s]}
+                      </span>
+                    ))}
+                </span>
+              )}
+            </div>
+            <SeverityBar counts={allocatedCounts} total={allocated.length} />
+          </div>
+
+          {allocated.length === 0 ? (
+            <div className="cve-build-empty">
+              <div className="cve-build-empty-icon">
+                <PackageIcon />
+              </div>
+              <p>
+                No CVEs allocated yet.
+                <br />
+                <span>
+                  Select fixes on the left and press <em>Allocate</em>.
+                </span>
+              </p>
+            </div>
+          ) : (
+            <ul className="cve-list">
+              {allocated.map((c) => (
+                <li
+                  key={c.id}
+                  className={`cve-item severity-${c.severity} is-allocated`}
+                >
+                  <div className="cve-stripe" />
+                  <div className="cve-body">
+                    <div className="cve-row">
+                      <span className="cve-id">{c.cve_id}</span>
+                      <span className={`sev-pill sev-${c.severity}`}>
+                        {SEVERITY_LABEL[c.severity]}
+                      </span>
+                      <span className="cve-cvss">
+                        <span className="cve-cvss-num">
+                          {c.cvss.toFixed(1)}
+                        </span>
+                        <span className="cve-cvss-label">CVSS</span>
+                      </span>
+                    </div>
+                    <div className="cve-summary">{c.summary}</div>
+                    <div className="cve-meta">
+                      <span className="cve-pkg">
+                        <PackageIcon />
+                        <strong>{c.package}</strong>
+                        <ArrowRightIcon />
+                        <code className="cve-fix">{c.fixed_version}</code>
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    className="cve-quick-btn cve-quick-btn-back"
+                    onClick={() => removeFromBuild(c.id)}
+                    title="Return to backlog"
+                    aria-label="Return to backlog"
+                  >
+                    <ArrowLeftIcon />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      <div className="cve-history-header">
+        <h2>Release Timeline</h2>
+        <p>CVEs included in previous image builds</p>
+      </div>
+
+      <div className="cve-history">
+        {RELEASED_BUILDS_SEED.map((rel, idx) => {
+          const isOpen = openRelease === rel.id;
+          const counts = countBySeverity(rel.cves);
+          const isLast = idx === RELEASED_BUILDS_SEED.length - 1;
+          return (
+            <article
+              key={rel.id}
+              className={`cve-release ${isOpen ? "is-open" : ""}`}
+            >
+              <div className="cve-release-rail">
+                <div className="cve-release-dot">
+                  <CheckCircleIcon />
+                </div>
+                {!isLast && <div className="cve-release-line" />}
+              </div>
+
+              <div className="cve-release-card">
+                <button
+                  className="cve-release-header"
+                  onClick={() => setOpenRelease(isOpen ? null : rel.id)}
+                  aria-expanded={isOpen}
+                >
+                  <div className="cve-release-title">
+                    <div className="cve-release-title-main">
+                      <span className="cve-release-version">{rel.version}</span>
+                      <span className="cve-release-date">
+                        shipped {rel.released_at}
+                      </span>
+                    </div>
+                    <span className="cve-release-digest">
+                      {rel.image_digest}
+                    </span>
+                  </div>
+
+                  <div className="cve-release-meta">
+                    <div className="cve-release-counts">
+                      {(Object.keys(counts) as Severity[])
+                        .filter((k) => counts[k] > 0)
+                        .map((k) => (
+                          <span key={k} className={`sev-dot sev-${k}`}>
+                            <span className="sev-dot-mark" />
+                            {counts[k]} {SEVERITY_LABEL[k]}
+                          </span>
+                        ))}
+                    </div>
+                    <div className="cve-release-bar-wrap">
+                      <SeverityBar counts={counts} total={rel.cves.length} />
+                      <span className="cve-release-total">
+                        {rel.cves.length} fix{rel.cves.length === 1 ? "" : "es"}
+                      </span>
+                    </div>
+                    <span className="cve-release-chevron">
+                      <ChevronIcon open={isOpen} />
+                    </span>
+                  </div>
+                </button>
+
+                {isOpen && (
+                  <div className="cve-release-body">
+                    <ul className="cve-list">
+                      {[...rel.cves]
+                        .sort(
+                          (a, b) =>
+                            SEVERITY_ORDER[a.severity] -
+                            SEVERITY_ORDER[b.severity],
+                        )
+                        .map((c) => (
+                          <li
+                            key={c.id}
+                            className={`cve-item severity-${c.severity} is-released`}
+                          >
+                            <div className="cve-stripe" />
+                            <div className="cve-body">
+                              <div className="cve-row">
+                                <span className="cve-id">{c.cve_id}</span>
+                                <span
+                                  className={`sev-pill sev-${c.severity}`}
+                                >
+                                  {SEVERITY_LABEL[c.severity]}
+                                </span>
+                                <span className="cve-cvss">
+                                  <span className="cve-cvss-num">
+                                    {c.cvss.toFixed(1)}
+                                  </span>
+                                  <span className="cve-cvss-label">CVSS</span>
+                                </span>
+                              </div>
+                              <div className="cve-summary">{c.summary}</div>
+                              <div className="cve-meta">
+                                <span className="cve-pkg">
+                                  <PackageIcon />
+                                  <strong>{c.package}</strong>
+                                  <code>{c.affected_version}</code>
+                                  <ArrowRightIcon />
+                                  <code className="cve-fix">
+                                    {c.fixed_version}
+                                  </code>
+                                </span>
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </>
+  );
+}
