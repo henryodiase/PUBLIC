@@ -1,1 +1,759 @@
-nnnnn
+
+.process-toggle-btn.is-active {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.4);
+}
+
+/* ── Patch Workflow Diagram ── */
+.patch-workflow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.patch-stage {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.patch-stage:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.1);
+}
+
+.patch-stage-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.patch-stage-header h4 {
+  margin: 0;
+  font-size: 12px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 700;
+}
+
+.patch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #d1fae5;
+  color: var(--success);
+  width: fit-content;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+
+.patch-badge svg {
+  width: 11px;
+  height: 11px;
+}
+
+.patch-stage ul {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.patch-stage li {
+  margin-bottom: 4px;
+}
+
+.patch-stage-arrow {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px -2px rgba(59, 130, 246, 0.5);
+}
+
+.patch-stage-arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Patch Progress ── */
+.patch-progress-container {
+  border-color: #bbf7d0;
+  background:
+    linear-gradient(180deg, rgba(5, 150, 105, 0.04) 0%, var(--surface) 50%),
+    var(--surface);
+}
+
+.patch-overall-fill {
+  background: linear-gradient(90deg, var(--accent), var(--success)) !important;
+}
+
+.patch-cycle-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.patch-sev-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.patch-sev-dot.patch-sev-critical {
+  background: var(--sev-critical);
+  box-shadow: 0 0 0 3px var(--sev-critical-soft);
+}
+
+.patch-sev-dot.patch-sev-high {
+  background: var(--sev-high);
+  box-shadow: 0 0 0 3px var(--sev-high-soft);
+}
+
+.patch-cycle-cve {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.patch-cycle-pkg {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.patch-cycle-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.progress-timeline-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+/* ── Patch cycles summary cards ── */
+.patch-cycles-summary {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.patch-cycles-summary h4 {
+  margin: 0 0 14px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.patch-cycles-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.patch-cycle-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.patch-cycle-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px -4px rgba(59, 130, 246, 0.15);
+}
+
+.patch-cycle-card.is-active {
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.04);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.patch-cycle-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.patch-cycle-card-cve {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+.patch-cycle-card-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.patch-cycle-card-pkg {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.patch-cycle-card-bar {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.patch-cycle-card-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+@media (max-width: 1200px) {
+  .patch-workflow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .patch-stage-arrow {
+    display: none;
+  }
+
+  .progress-timeline-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .patch-workflow {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-timeline-5 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+//////////////
+
+
+import { useState } from "react";
+
+type StepState = "complete" | "active" | "pending" | "failed";
+
+interface Step {
+  id: string;
+  label: string;
+  state: StepState;
+}
+
+interface Stage {
+  id: number;
+  title: string;
+  steps: Step[];
+}
+
+interface PatchCycle {
+  id: string;
+  label: string;
+  cve_id: string;
+  severity: "critical" | "high";
+  package: string;
+  triggered_at: string;
+  stages: Stage[];
+}
+
+const PATCH_CYCLES: PatchCycle[] = [
+  {
+    id: "pc-1",
+    label: "openssl 3.0.14 patch",
+    cve_id: "CVE-2026-10421",
+    severity: "critical",
+    package: "openssl",
+    triggered_at: "2026-05-07",
+    stages: [
+      {
+        id: 1,
+        title: "CVE Disclosed",
+        steps: [
+          { id: "cve_pull", label: "CVE Checker pulled CVE", state: "complete" },
+          { id: "threat_scored", label: "Threat Manager scored", state: "complete" },
+          { id: "marked_patch", label: "Marked for auto-patch", state: "complete" },
+        ],
+      },
+      {
+        id: 2,
+        title: "Trigger Pipeline",
+        steps: [
+          { id: "poll_nexus", label: "Package polled in Nexus", state: "complete" },
+          { id: "pipeline_trigger", label: "Packaging pipeline triggered", state: "complete" },
+        ],
+      },
+      {
+        id: 3,
+        title: "Packaging & Prep",
+        steps: [
+          { id: "baseline_api", label: "Baseline API called", state: "complete" },
+          { id: "policy_update", label: "Policy / registry updated", state: "complete" },
+          { id: "pkg_inject", label: "Injected into package creation", state: "complete" },
+        ],
+      },
+      {
+        id: 4,
+        title: "Copy to Higher Env",
+        steps: [
+          { id: "copy_higher", label: "Copied to higher environment", state: "active" },
+          { id: "avail_eng", label: "Available in ENG", state: "pending" },
+          { id: "copy_sev", label: "Copied ENG to Sev", state: "pending" },
+        ],
+      },
+      {
+        id: 5,
+        title: "Image Creation",
+        steps: [
+          { id: "img_trigger", label: "Pipeline triggered", state: "pending" },
+          { id: "img_build", label: "Build triggered", state: "pending" },
+          { id: "img_test", label: "Automated testing", state: "pending" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "pc-2",
+    label: "log4j-core 2.23.1 patch",
+    cve_id: "CVE-2026-10844",
+    severity: "critical",
+    package: "log4j-core",
+    triggered_at: "2026-05-08",
+    stages: [
+      {
+        id: 1,
+        title: "CVE Disclosed",
+        steps: [
+          { id: "cve_pull", label: "CVE Checker pulled CVE", state: "complete" },
+          { id: "threat_scored", label: "Threat Manager scored", state: "complete" },
+          { id: "marked_patch", label: "Marked for auto-patch", state: "complete" },
+        ],
+      },
+      {
+        id: 2,
+        title: "Trigger Pipeline",
+        steps: [
+          { id: "poll_nexus", label: "Package polled in Nexus", state: "complete" },
+          { id: "pipeline_trigger", label: "Packaging pipeline triggered", state: "complete" },
+        ],
+      },
+      {
+        id: 3,
+        title: "Packaging & Prep",
+        steps: [
+          { id: "baseline_api", label: "Baseline API called", state: "active" },
+          { id: "policy_update", label: "Policy / registry updated", state: "pending" },
+          { id: "pkg_inject", label: "Injected into package creation", state: "pending" },
+        ],
+      },
+      {
+        id: 4,
+        title: "Copy to Higher Env",
+        steps: [
+          { id: "copy_higher", label: "Copied to higher environment", state: "pending" },
+          { id: "avail_eng", label: "Available in ENG", state: "pending" },
+          { id: "copy_sev", label: "Copied ENG to Sev", state: "pending" },
+        ],
+      },
+      {
+        id: 5,
+        title: "Image Creation",
+        steps: [
+          { id: "img_trigger", label: "Pipeline triggered", state: "pending" },
+          { id: "img_build", label: "Build triggered", state: "pending" },
+          { id: "img_test", label: "Automated testing", state: "pending" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "pc-3",
+    label: "glibc 2.39 patch",
+    cve_id: "CVE-2026-10977",
+    severity: "high",
+    package: "glibc",
+    triggered_at: "2026-05-10",
+    stages: [
+      {
+        id: 1,
+        title: "CVE Disclosed",
+        steps: [
+          { id: "cve_pull", label: "CVE Checker pulled CVE", state: "complete" },
+          { id: "threat_scored", label: "Threat Manager scored", state: "complete" },
+          { id: "marked_patch", label: "Marked for auto-patch", state: "complete" },
+        ],
+      },
+      {
+        id: 2,
+        title: "Trigger Pipeline",
+        steps: [
+          { id: "poll_nexus", label: "Package polled in Nexus", state: "active" },
+          { id: "pipeline_trigger", label: "Packaging pipeline triggered", state: "pending" },
+        ],
+      },
+      {
+        id: 3,
+        title: "Packaging & Prep",
+        steps: [
+          { id: "baseline_api", label: "Baseline API called", state: "pending" },
+          { id: "policy_update", label: "Policy / registry updated", state: "pending" },
+          { id: "pkg_inject", label: "Injected into package creation", state: "pending" },
+        ],
+      },
+      {
+        id: 4,
+        title: "Copy to Higher Env",
+        steps: [
+          { id: "copy_higher", label: "Copied to higher environment", state: "pending" },
+          { id: "avail_eng", label: "Available in ENG", state: "pending" },
+          { id: "copy_sev", label: "Copied ENG to Sev", state: "pending" },
+        ],
+      },
+      {
+        id: 5,
+        title: "Image Creation",
+        steps: [
+          { id: "img_trigger", label: "Pipeline triggered", state: "pending" },
+          { id: "img_build", label: "Build triggered", state: "pending" },
+          { id: "img_test", label: "Automated testing", state: "pending" },
+        ],
+      },
+    ],
+  },
+];
+
+function stageState(stage: Stage): StepState {
+  const states = stage.steps.map((s) => s.state);
+  if (states.some((s) => s === "failed")) return "failed";
+  if (states.every((s) => s === "complete")) return "complete";
+  if (states.some((s) => s === "active" || s === "complete")) return "active";
+  return "pending";
+}
+
+function SeverityDot({ severity }: { severity: "critical" | "high" }) {
+  return (
+    <span
+      className={`patch-sev-dot patch-sev-${severity}`}
+      title={severity}
+    />
+  );
+}
+
+const RING_RADIUS = 44;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+function StageRing({ stepStates }: { stepStates: StepState[] }) {
+  const total = stepStates.length;
+  const segAngle = 360 / total;
+  const dashLen = (segAngle / 360) * RING_CIRCUMFERENCE;
+  const gapLen = RING_CIRCUMFERENCE - dashLen;
+  return (
+    <svg
+      className="progress-stage-ring"
+      viewBox="0 0 100 100"
+      aria-hidden="true"
+    >
+      {stepStates.map((state, i) => {
+        const rotation = -90 + i * segAngle;
+        return (
+          <circle
+            key={i}
+            className={`ring-segment segment-${state}`}
+            cx="50"
+            cy="50"
+            r={RING_RADIUS}
+            fill="none"
+            strokeWidth="10"
+            strokeDasharray={`${dashLen} ${gapLen}`}
+            transform={`rotate(${rotation} 50 50)`}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+export default function PatchProgress() {
+  const [selectedId, setSelectedId] = useState<string>(PATCH_CYCLES[0].id);
+  const cycle = PATCH_CYCLES.find((c) => c.id === selectedId) ?? PATCH_CYCLES[0];
+
+  const totalSteps = cycle.stages.reduce((n, s) => n + s.steps.length, 0);
+  const doneSteps = cycle.stages.reduce(
+    (n, s) => n + s.steps.filter((st) => st.state === "complete").length,
+    0,
+  );
+  const percent = Math.round((doneSteps / totalSteps) * 100);
+
+  return (
+    <section className="progress-container patch-progress-container">
+      <div className="progress-header">
+        <div>
+          <h3 className="progress-title">Patch Progress</h3>
+          <div className="progress-subtitle">
+            CVE-driven automated patching pipeline
+          </div>
+        </div>
+        <div className="release-selector">
+          <label htmlFor="patch-select">Active Patch</label>
+          <select
+            id="patch-select"
+            value={selectedId}
+            onChange={(e) => setSelectedId(e.target.value)}
+          >
+            {PATCH_CYCLES.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.cve_id} — {c.package}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="patch-cycle-info">
+        <SeverityDot severity={cycle.severity} />
+        <span className="patch-cycle-cve">{cycle.cve_id}</span>
+        <span className={`sev-pill sev-${cycle.severity}`}>
+          {cycle.severity === "critical" ? "Critical" : "High"}
+        </span>
+        <span className="patch-cycle-pkg">{cycle.package}</span>
+        <span className="patch-cycle-date">triggered {cycle.triggered_at}</span>
+      </div>
+
+      <div className="progress-overall">
+        <div className="progress-overall-label">
+          <span>
+            {doneSteps} of {totalSteps} steps complete
+          </span>
+          <strong>{percent}%</strong>
+        </div>
+        <div className="progress-overall-bar">
+          <div
+            className="progress-overall-fill patch-overall-fill"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="progress-timeline progress-timeline-5">
+        {cycle.stages.map((stage, idx) => {
+          const sState = stageState(stage);
+          return (
+            <div
+              key={stage.id}
+              className={`progress-stage stage-${sState}`}
+            >
+              <div className="progress-stage-node">
+                <div className="progress-stage-dot">
+                  <StageRing
+                    stepStates={stage.steps.map((s) => s.state)}
+                  />
+                  <span className="progress-stage-label">
+                    {sState === "complete"
+                      ? "\u2713"
+                      : sState === "failed"
+                        ? "!"
+                        : stage.id}
+                  </span>
+                </div>
+                {idx < cycle.stages.length - 1 && (
+                  <div
+                    className={`progress-stage-line line-${
+                      sState === "complete"
+                        ? "complete"
+                        : sState === "failed"
+                          ? "failed"
+                          : "pending"
+                    }`}
+                  />
+                )}
+              </div>
+              <div className="progress-stage-title">{stage.title}</div>
+              <ul className="progress-steps">
+                {stage.steps.map((step) => (
+                  <li key={step.id} className={`progress-step step-${step.state}`}>
+                    <span className="progress-step-icon" aria-hidden />
+                    <span className="progress-step-label">{step.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="patch-cycles-summary">
+        <h4>Active Patch Cycles</h4>
+        <div className="patch-cycles-list">
+          {PATCH_CYCLES.map((c) => {
+            const total = c.stages.reduce((n, s) => n + s.steps.length, 0);
+            const done = c.stages.reduce(
+              (n, s) => n + s.steps.filter((st) => st.state === "complete").length,
+              0,
+            );
+            const pct = Math.round((done / total) * 100);
+            return (
+              <button
+                key={c.id}
+                className={`patch-cycle-card ${c.id === selectedId ? "is-active" : ""}`}
+                onClick={() => setSelectedId(c.id)}
+              >
+                <div className="patch-cycle-card-top">
+                  <SeverityDot severity={c.severity} />
+                  <span className="patch-cycle-card-cve">{c.cve_id}</span>
+                  <span className="patch-cycle-card-pct">{pct}%</span>
+                </div>
+                <div className="patch-cycle-card-pkg">{c.package}</div>
+                <div className="patch-cycle-card-bar">
+                  <div
+                    className="patch-cycle-card-fill"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+
+//////////
+
+
+const stages = [
+  {
+    title: "1. CVEs Disclosed",
+    badge: "Automated",
+    items: [
+      "CVE Checker automatically pulls latest CVEs",
+      "CVEs sent to Threat Manager for analysis & scoring",
+      "High / Critical CVEs marked for automated patching",
+    ],
+  },
+  {
+    title: "2. Trigger Packaging Pipeline",
+    badge: "Automated",
+    items: [
+      "Auto-poll for package to be available in Nexus",
+      "Trigger packaging pipeline on availability",
+    ],
+  },
+  {
+    title: "3. Automated Packaging & Prep",
+    badge: "Automated",
+    items: [
+      "Pipeline calls baseline API for automatic policy / registry updates",
+      "Inject updates into package creation process",
+    ],
+  },
+  {
+    title: "4. Copy to Higher Environment",
+    badge: "Automated",
+    items: [
+      "Automated copy to higher environment build",
+      "Wait for build to be available in ENG",
+      "Trigger pipeline to copy from ENG to Sev",
+    ],
+  },
+  {
+    title: "5. Automated Image Creation",
+    badge: "Automated",
+    items: [
+      "Pipeline automatically triggered on copy completion",
+      "Build automatically triggered",
+      "Automated testing on completion",
+    ],
+  },
+];
+
+function AutoBadge() {
+  return (
+    <span className="patch-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="13 17 18 12 13 7" />
+        <polyline points="6 17 11 12 6 7" />
+      </svg>
+      Automated
+    </span>
+  );
+}
+
+export default function PatchWorkflowDiagram() {
+  return (
+    <div className="patch-workflow">
+      {stages.map((stage, idx) => (
+        <div key={stage.title} className="patch-stage">
+          <div className="patch-stage-header">
+            <h4>{stage.title}</h4>
+            <AutoBadge />
+          </div>
+          <ul>
+            {stage.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          {idx < stages.length - 1 && (
+            <div className="patch-stage-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
